@@ -3,43 +3,55 @@ import React from "react";
 import whatsappIcon from "../../assets/images/icons/whatsapp.svg";
 
 import "./styles.css";
+import api from "../../services/api";
 
-function TeacherItem() {
+export interface Teacher {
+  id: number;
+  name: string;
+  subject: string;
+  bio: string;
+  cost: number;
+  avatar: string;
+  whatsapp: string;
+}
+
+interface TeacherItemProps {
+  teacher: Teacher;
+}
+
+const TeacherItem: React.FC<TeacherItemProps> = ({ teacher }) => {
+  function createNewConnection() {
+    api.post("connections", {
+      user_id: teacher.id,
+    });
+  }
+
   return (
     <article className="teacher-item">
       <header>
-        <img
-          src="https://avatars2.githubusercontent.com/u/69631?s=200&v=4"
-          alt="Renan Santos"
-        />
+        <img src={teacher.avatar} alt={teacher.name} />
         <div>
-          <strong>Renan Santos</strong>
-          <span>Quimica</span>
+          <strong>{teacher.name}</strong>
+          <span>{teacher.subject}</span>
         </div>
       </header>
-      <p>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quidem in fuga
-        repellat eaque quo porro, ducimus non maxime autem beatae tempora
-        quisquam illum dolore, itaque ullam! Illo adipisci tempore velit.
-        <br />
-        <br />
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem
-        ratione nulla iusto tenetur fuga minima rerum repellat id natus
-        quibusdam, soluta doloremque quidem doloribus deserunt illo corporis
-        eos! Placeat, possimus.
-      </p>
+      <p>{teacher.bio}</p>
       <footer>
         <p>
           Preço/Hora
-          <strong>R$ 80,00</strong>
+          <strong>R$ {teacher.cost},00</strong>
         </p>
-        <button type="button">
+        <a
+          href={`https://wa.me/${teacher.whatsapp}`}
+          onClick={createNewConnection}
+          target="_blank"
+        >
           <img src={whatsappIcon} alt="Whatsapp" />
           Entrar em contato
-        </button>
+        </a>
       </footer>
     </article>
   );
-}
+};
 
 export default TeacherItem;
