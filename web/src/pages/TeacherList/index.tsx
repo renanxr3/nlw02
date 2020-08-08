@@ -1,4 +1,5 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState, FormEvent, useRef, useEffect } from "react";
+import { debounce } from "lodash";
 
 import PageHeader from "../../components/PageHeader";
 
@@ -15,24 +16,42 @@ function TeacherList() {
 
   const [teacher, setTeachers] = useState([]);
 
+  const formRef = useRef<HTMLFormElement>(null);
+
   async function searchTeachers(e: FormEvent) {
     e.preventDefault();
 
-    const response = await api.get("classes", {
-      params: {
-        subject,
-        week_day: weekDay,
-        time,
-      },
-    });
-
-    setTeachers(response.data);
+    callTheApiToSearchTeachers();
   }
+
+  const callTheApiToSearchTeachers = debounce(async () => {
+    console.log("searchTeachers");
+
+    const data = {
+      subject,
+      week_day: weekDay,
+      time,
+    };
+
+    console.log(data);
+
+    if (subject && weekDay && time) {
+      const response = await api.get("classes", {
+        params: data,
+      });
+
+      setTeachers(response.data);
+    }
+  }, 1000);
+
+  useEffect(() => {
+    callTheApiToSearchTeachers();
+  }, [subject, weekDay, time, callTheApiToSearchTeachers]);
 
   return (
     <div id="page-teacher-list" className="container">
       <PageHeader title="Estes são os proffys disponíveis">
-        <form id="search-teachers" onSubmit={searchTeachers}>
+        <form id="search-teachers" ref={formRef} onSubmit={searchTeachers}>
           <Select
             name="subject"
             label="Matéria"
@@ -49,7 +68,11 @@ function TeacherList() {
               { value: "Química", label: "Química" },
             ]}
             value={subject}
-            onChange={(e) => setSubject(e.target.value)}
+            onChange={(e) => {
+              setSubject(e.target.value);
+              // reallySearchTeachers();
+            }}
+            // onBlur={reallySearchTeachers}
           />
 
           <Select
@@ -65,7 +88,11 @@ function TeacherList() {
               { value: "6", label: "Sábado" },
             ]}
             value={weekDay}
-            onChange={(e) => setWeekDay(e.target.value)}
+            onChange={(e) => {
+              setWeekDay(e.target.value);
+              // reallySearchTeachers();
+            }}
+            // onBlur={reallySearchTeachers}
           />
 
           <Input
@@ -75,7 +102,10 @@ function TeacherList() {
             value={time}
             onChange={(e) => {
               setTime(e.target.value);
+              // formRef.current?.submit();
+              // reallySearchTeachers();
             }}
+            // onBlur={reallySearchTeachers}
           />
 
           <button type="submit">Buscar</button>
