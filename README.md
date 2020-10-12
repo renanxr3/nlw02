@@ -14,7 +14,7 @@
 
 # Project
 
-Projeto Proffy durante a Next Level Week (NLW) 02 da Rocketseat (Agosto/2020).
+Projeto Proffy desenvolvido durante a Next Level Week (NLW) 02 da Rocketseat (Agosto/2020).
 
 O Proffy é uma plataforma de busca de aulas particulares, onde professores se cadastram informando quais matérias / assuntos tem aptidão para ensinar, e os alunos pesquisam quais professores tem disponibilidade para ensinar alguma matéria. Após encontrar, o aluno pode entrar em contato via Whatsapp.
 
